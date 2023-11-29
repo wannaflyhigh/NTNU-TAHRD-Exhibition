@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors'
-import { clearAr, touchAr } from './mongodb.js';
+import { browseDataWithToken, clearAr, touchAr } from './mongodb.js';
 
 const app = express();
 
@@ -20,6 +20,12 @@ app.get('/clear-ar', async (req, res) => {
 	const { token } = req.query
 	const status = await clearAr(token)
 	res.json(status)
+})
+
+app.get('/browse-data-with-token', async (req, res) => {
+	const { token } = req.query
+	const data = await browseDataWithToken(token)
+	res.json(data)
 })
 
 app.listen(3000);

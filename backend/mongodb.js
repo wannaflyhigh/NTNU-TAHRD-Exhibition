@@ -13,6 +13,8 @@ config()
 
 // touchAr("0VdKc5LOiK", 1)
 
+browseDataWithToken("0VdKc5LOiK")
+
 async function connectToCluster() {
 	const uri = process.env.DB_URI
 	try {
@@ -119,6 +121,30 @@ export async function clearAr(token) {
 		console.log(status)
 
 		return status
+
+		// const a = await collection.find().toArray()
+		// console.log(a)
+		// return a
+	} finally {
+		await mongoClient.close()
+	}
+}
+
+export async function browseDataWithToken(token) {
+	let mongoClient
+	try {
+		mongoClient = await connectToCluster()
+		mongoClient.db().admin()
+		const db = mongoClient.db("專展")
+		const collection = db.collection("投票")
+
+		console.log(`Querying token: ${token}`)
+
+		const data = await collection.findOne({ token })
+
+		console.log(data)
+
+		return data
 
 		// const a = await collection.find().toArray()
 		// console.log(a)
