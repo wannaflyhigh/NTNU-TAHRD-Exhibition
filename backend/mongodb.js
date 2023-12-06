@@ -13,7 +13,7 @@ config()
 
 // touchAr("0VdKc5LOiK", 1)
 
-browseDataWithToken("0VdKc5LOiK")
+// browseDataWithToken("0VdKc5LOiK")
 
 async function connectToCluster() {
 	const uri = process.env.DB_URI
@@ -44,7 +44,9 @@ export async function insertSomeData() {
 
 		for (let i = 0; i < parsedTokens.length; i++) {
 
-			const status = await collection.insertOne({ token: parsedTokens[i], ar })
+			// const status = await collection.insertOne({ token: parsedTokens[i], ar })
+			const id = String(i + 1).padStart(3, '0');
+			const status = await collection.updateOne({ token: parsedTokens[i] }, { $set: { id } })
 		}
 
 		// console.log(`adding ${book_id} to ${shelf_id}`)
@@ -141,6 +143,30 @@ export async function browseDataWithToken(token) {
 		console.log(`Querying token: ${token}`)
 
 		const data = await collection.findOne({ token })
+
+		console.log(data)
+
+		return data
+
+		// const a = await collection.find().toArray()
+		// console.log(a)
+		// return a
+	} finally {
+		await mongoClient.close()
+	}
+}
+
+export async function updateForm(token, vote, form) {
+	let mongoClient
+	try {
+		mongoClient = await connectToCluster()
+		mongoClient.db().admin()
+		const db = mongoClient.db("專展")
+		const collection = db.collection("投票")
+
+		console.log(`Updating form with token: ${token}, vote: ${vote}, form:${form}`)
+
+		const data = await collection.updateOne({ token }, { $set: { vote, form, isValidToken: true } })
 
 		console.log(data)
 
