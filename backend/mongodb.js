@@ -45,8 +45,9 @@ export async function insertSomeData() {
 		for (let i = 0; i < parsedTokens.length; i++) {
 
 			// const status = await collection.insertOne({ token: parsedTokens[i], ar })
-			const id = String(i + 1).padStart(3, '0');
-			const status = await collection.updateOne({ token: parsedTokens[i] }, { $set: { id } })
+			const id = String(i + 1 + 400).padStart(3, '0');
+			const status = await collection.insertOne({ token: parsedTokens[i], id, ar })
+			console.log(status)
 		}
 
 		// console.log(`adding ${book_id} to ${shelf_id}`)
@@ -171,6 +172,32 @@ export async function updateForm(token, vote, form) {
 		console.log(data)
 
 		return data
+
+		// const a = await collection.find().toArray()
+		// console.log(a)
+		// return a
+	} finally {
+		await mongoClient.close()
+	}
+}
+
+export async function getValidToken() {
+	let mongoClient
+	try {
+		mongoClient = await connectToCluster()
+		mongoClient.db().admin()
+		const db = mongoClient.db("專展")
+		const collection = db.collection("投票")
+
+		console.log(`getValidToken!`)
+
+		const data = await collection.find({}).toArray()
+
+		const validTokens=data.filter(e=>e.isValidToken)
+
+		// console.log(validTokens)
+
+		return validTokens
 
 		// const a = await collection.find().toArray()
 		// console.log(a)

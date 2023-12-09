@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors'
-import { browseDataWithToken, clearAr, touchAr, updateForm } from './mongodb.js';
+import { browseDataWithToken, clearAr, getValidToken, touchAr, updateForm } from './mongodb.js';
 
 const app = express();
 
@@ -33,6 +33,11 @@ app.get('/update-form', async (req, res) => {
 	const vote = JSON.parse(stringfiedVote)
 	const form = JSON.parse(stringfiedForm)
 	const data = await updateForm(token, vote, form)
+	res.json(data)
+})
+
+app.get('/get-valid-token', async (req, res) => {
+	const data = await getValidToken()
 	res.json(data)
 })
 
